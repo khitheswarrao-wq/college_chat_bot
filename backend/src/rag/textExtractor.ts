@@ -29,30 +29,27 @@ export async function extractText(filePath: string, fileType: string): Promise<E
 async function extractFromPdf(filePath: string): Promise<ExtractionResult> {
   const pdfParse = require("pdf-parse");
   const dataBuffer = fs.readFileSync(filePath);
-  
-  const data = await pdfParse(dataBuffer, {
-    pagerender: function(pageData: any) {
-      return pageData.getTextContent().then(function(textContent: any) {
-        let text = "";
-        for (const item of textContent.items) {
-          text += (item as any).str + " ";
-        }
-        return text;
-      });
-    }
-  });
 
-  // Split by pages approximation using form feed characters or page breaks
-  const fullText = data.text || "";
-  const numPages = data.numpages || 1;
+  let fullText = "";
+  let numPages = 1;
 
-  // Simple page splitting
+  try {
+    const data = await pdfParse(dataBuffer);
+    fullText = data.text || "";
+    numPages = data.numpages || 1;
+  } catch (err: any) {
+    console.error("[TextExtractor] PDF parse error:", err);
+    throw new Error(`Failed to extract text from PDF: ${err.message || err}`);
+  }
+
   const pages: ExtractedPage[] = [];
-  const textPerPage = Math.ceil(fullText.length / numPages);
-  for (let i = 0; i < numPages; i++) {
-    const pageText = fullText.substring(i * textPerPage, (i + 1) * textPerPage).trim();
-    if (pageText) {
-      pages.push({ pageNumber: i + 1, text: pageText });
+  if (fullText.trim().length > 0) {
+    const textPerPage = Math.ceil(fullText.length / Math.max(1, numPages));
+    for (let i = 0; i < numPages; i++) {
+      const pageText = fullText.substring(i * textPerPage, (i + 1) * textPerPage).trim();
+      if (pageText) {
+        pages.push({ pageNumber: i + 1, text: pageText });
+      }
     }
   }
 
