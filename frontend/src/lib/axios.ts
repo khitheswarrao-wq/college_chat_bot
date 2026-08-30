@@ -15,6 +15,7 @@ const getBaseURL = () => {
 };
 
 const api = axios.create({
+  timeout: 60000,
   withCredentials: true,
 });
 
