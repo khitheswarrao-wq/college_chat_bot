@@ -25,8 +25,23 @@ export async function ingestDocument(documentId: number): Promise<void> {
 
     console.log(`[Ingestion] Starting: ${doc.name} (id=${documentId})`);
 
+    // 0. Verify file exists on disk
+    let targetFilePath = doc.storagePath;
+    if (!fs.existsSync(targetFilePath)) {
+      const altPath = path.join(process.cwd(), "uploads", path.basename(doc.storagePath));
+      if (fs.existsSync(altPath)) {
+        targetFilePath = altPath;
+      } else {
+        await doc.update({
+          status: "FAILED",
+          processingError: "Original file is no longer on server disk (server restarted). Please upload this document again.",
+        });
+        return;
+      }
+    }
+
     // 1. Extract text
-    const extracted = await extractText(doc.storagePath, doc.fileType);
+    const extracted = await extractText(targetFilePath, doc.fileType);
     console.log(`[Ingestion] Extracted ${extracted.totalPages} pages`);
 
     // 2. Clean text per page
