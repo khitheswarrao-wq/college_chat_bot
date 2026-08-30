@@ -79,7 +79,7 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
     if (error.message === "Conversation not found") {
       return res.status(404).json({ success: false, message: error.message });
     }
-    res.status(500).json({ success: false, message: "Chat failed. Please try again.", code: "AI_SERVICE_ERROR" });
+    res.status(500).json({ success: false, message: error.message || "Chat failed. Please try again.", code: "AI_SERVICE_ERROR" });
   }
 };
 
