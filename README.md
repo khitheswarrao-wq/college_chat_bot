@@ -75,13 +75,13 @@ Students, parents, and faculty members frequently struggle to find accurate, up-
 
 ## 6. Live Demo
 - **Live Application URL:**  
-  `https://________________________`  *(Paste your deployed Frontend / Vercel / Render URL here)*
+  https://college-chatbot-frontend-5v86.onrender.com
 
 ---
 
 ## 7. Backend
 - **Live Backend API URL:**  
-  `https://________________________/api`  *(Paste your deployed Backend API URL here)*
+ https://college-chatbot-backend-flep.onrender.com
 
 - **API Health Check Endpoint:**  
   `https://________________________/api/health`
