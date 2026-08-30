@@ -9,7 +9,8 @@ let client: Groq | null = null;
 let cachedKey: string = "";
 
 function getClient(): Groq {
-  const apiKey = process.env.GROQ_API_KEY || "";
+  const rawKey = process.env.GROQ_API_KEY || "";
+  const apiKey = rawKey.trim().replace(/^["']|["']$/g, "");
   if (!apiKey) {
     throw new Error("GROQ_API_KEY is not configured in Environment Variables. Please set GROQ_API_KEY on Render.");
   }
