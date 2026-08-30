@@ -21,11 +21,6 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
-      - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: college-chatbot-frontend
-          property: url
       - key: GEMINI_API_KEY
         sync: false
 
@@ -44,18 +39,13 @@ services:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_API_URL
-        fromService:
-          type: web
-          name: college-chatbot-backend
-          property: url
-          postfix: /api
+        sync: false
 
 databases:
   # ----------------------------------------------------
-  # PostgreSQL Database (with pgvector support)
+  # PostgreSQL Database
   # ----------------------------------------------------
   - name: college-chatbot-db
     databaseName: collegeai
-    user: postgres
     region: oregon
     plan: free
