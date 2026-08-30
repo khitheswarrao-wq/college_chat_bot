@@ -1,0 +1,61 @@
+services:
+  # ----------------------------------------------------
+  # Backend API Service
+  # ----------------------------------------------------
+  - type: web
+    name: college-chatbot-backend
+    env: node
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: college-chatbot-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: college-chatbot-frontend
+          property: url
+      - key: GEMINI_API_KEY
+        sync: false
+
+  # ----------------------------------------------------
+  # Frontend Next.js Web App
+  # ----------------------------------------------------
+  - type: web
+    name: college-chatbot-frontend
+    env: node
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: college-chatbot-backend
+          property: url
+          postfix: /api
+
+databases:
+  # ----------------------------------------------------
+  # PostgreSQL Database (with pgvector support)
+  # ----------------------------------------------------
+  - name: college-chatbot-db
+    databaseName: collegeai
+    user: postgres
+    region: oregon
+    plan: free
