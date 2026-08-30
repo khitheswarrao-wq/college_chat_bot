@@ -83,8 +83,6 @@ Students, parents, and faculty members frequently struggle to find accurate, up-
 - **Live Backend API URL:**  
  https://college-chatbot-backend-flep.onrender.com
 
-- **API Health Check Endpoint:**  
-  `https://________________________/api/health`
 
 ---
 
