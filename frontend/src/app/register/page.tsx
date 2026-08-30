@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Brain, Mail, Lock, User, AlertCircle, Loader2, Eye, EyeOff, CheckCircle } from "lucide-react";
-import api from "../../lib/axios";
+import api, { getBaseURL } from "../../lib/axios";
 import { useAuthStore } from "../../store/authStore";
 
 export default function RegisterPage() {
@@ -61,7 +61,8 @@ export default function RegisterPage() {
       console.error("Registration error:", err);
       const serverMsg = err.response?.data?.message;
       const netMsg = err.message;
-      setError(serverMsg || netMsg || "Registration failed. Please check backend connection.");
+      const targetUrl = getBaseURL();
+      setError(`${serverMsg || netMsg || "Registration failed."} [Target: ${targetUrl}]`);
     } finally {
       setLoading(false);
     }

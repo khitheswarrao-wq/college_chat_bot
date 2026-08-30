@@ -22,7 +22,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({
+const corsMiddleware = cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     callback(null, origin);
@@ -30,7 +30,10 @@ app.use(cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-}));
+});
+
+app.use(corsMiddleware);
+app.options("*", corsMiddleware);
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));

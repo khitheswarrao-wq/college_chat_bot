@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const getBaseURL = () => {
+export const getBaseURL = () => {
   if (process.env.NEXT_PUBLIC_API_URL && !process.env.NEXT_PUBLIC_API_URL.includes("localhost")) {
     return process.env.NEXT_PUBLIC_API_URL;
   }
