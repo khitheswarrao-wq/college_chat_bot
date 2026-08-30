@@ -11,14 +11,16 @@ import * as os from "os";
 let pipeline: any = null;
 let modelLoading: Promise<any> | null = null;
 
+const dynamicImport = new Function("specifier", "return import(specifier)");
+
 async function getEmbeddingPipeline(): Promise<any> {
   if (pipeline) return pipeline;
   if (modelLoading) return modelLoading;
 
   modelLoading = (async () => {
     console.log("[Embeddings] Loading local embedding model...");
-    // Dynamic import to avoid top-level ESM issues
-    const { pipeline: createPipeline, env } = await import("@xenova/transformers");
+    // Use dynamic function import to prevent TypeScript CommonJS from converting import() to require()
+    const { pipeline: createPipeline, env } = await dynamicImport("@xenova/transformers");
     env.allowRemoteModels = true;
     env.useBrowserCache = false;
     env.cacheDir = path.join(os.tmpdir(), "xenova-cache");
