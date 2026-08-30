@@ -23,7 +23,18 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: (origin, callback) => {
+    if (
+      !origin ||
+      process.env.NODE_ENV !== "production" ||
+      origin.includes("onrender.com") ||
+      (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)
+    ) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
   credentials: true,
 }));
 
@@ -51,8 +62,12 @@ const startServer = async () => {
     await sequelize.sync({ alter: false });
     console.log("Database models synchronized.");
 
-    // Initialize vector store (pgvector extension + embedding column)
-    await initVectorStore();
+    // Initialize vector store safely
+    try {
+      await initVectorStore();
+    } catch (vError) {
+      console.warn("Vector store initialization notice:", vError);
+    }
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
