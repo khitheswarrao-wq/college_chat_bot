@@ -58,7 +58,10 @@ export default function RegisterPage() {
       login(data.user, data.token);
       router.push(data.user.role === "admin" ? "/admin" : "/chat");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
+      console.error("Registration error:", err);
+      const serverMsg = err.response?.data?.message;
+      const netMsg = err.message;
+      setError(serverMsg || netMsg || "Registration failed. Please check backend connection.");
     } finally {
       setLoading(false);
     }
